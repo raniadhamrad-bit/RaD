@@ -1,1 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RaD</title>
+    
+    <!-- GOOGLE SEARCH CONSOLE VERIFICATION -->
+    <meta name="google-site-verification" content="GQJM1fZ35QJ1MEUtgQGUEYOrNbs1d_7xh5LiOAWBNGY" />
 
+    <!-- GOOGLE ANALYTICS (Replace G-XXXXXXXXXX with your actual ID) -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    -->
+
+    <style>
+        /* Import technical sans-serif font for UI */
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
+        /* Import Garamond Regular and Italic for the logo */
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #000000;
+            --font-main: 'IBM Plex Mono', monospace;
+            --font-logo: 'EB Garamond', Garamond, serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- Landing Page Styles --- */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #landing-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .landing-logo {
+            font-family: var(--font-logo);
+            font-size: 80px; 
+            font-weight: 400;
+            letter-spacing: 0.45em;
+            font-style: normal;
+            cursor: pointer;
+            transition: font-style 0.2s ease, transform 0.3s ease;
+            padding-left: 0.45em; 
+        }
+
+        .landing-logo:hover {
+            font-style: italic;
+            transform: scale(1.05);
+        }
+
+        /* --- Main Website Styles --- */
+        #main-website {
+            padding: 24px;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none; 
+            visibility: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #main-website.loaded {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        /* Top Header Area */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            position: relative;
+            z-index: 100; 
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 101; 
+        }
+
+        .brand-title {
+            font-family: var(--font-logo);
+            font-size: 30px; 
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: 0.45em;
+            font-style: normal;
+            transition: font-style 0.1s ease; 
+            cursor: pointer;
+        }
+
+        .brand-title:hover {
+            font-style: italic;
+        }
+
+        /* Dropdown Menu Container */
+        .menu-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .plus-icon {
+            font-size: 40px; 
+            font-weight: 300;
+            line-height: 0.5;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+            margin-top: -10px;
+        }
+
+        .plus-icon:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Dropdown Styles */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 15px;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            padding: 20px; 
+            padding-left: 4px;
+            z-index: 999; 
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu a:hover {
+            opacity: 0.5;
+            text-decoration: none;
+        }
+
+        /* --- New Layout: Text List & Hero Image --- */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 100px);
+        }
+
+        /* Center Canvas: Holds Hero Image and Description below it */
+        .center-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; 
+            z-index: 1;
+            padding-right: 350px; /* Offset for the text list on the right */
+        }
+
+        .hover-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hover-content.active {
+            opacity: 1;
+        }
+
+        .hero-image-container {
+            width: 100%;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align image to bottom of container */
+            margin-bottom: 20px;
+        }
+
+        .hero-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .hover-description {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #555;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        /* Right Side: Project List */
+        .projects-list {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+            z-index: 10;
+            padding-right: 24px;
+        }
+
+        .project-item {
+            text-align: right;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-item .title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            transition: font-style 0.1s ease;
+        }
+
+        .project-item:hover .title {
+            font-style: italic;
+        }
+
+        /* --- Footer / Copyright --- */
+        .copyright {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            font-size: 10px;
+            color: #999;
+            letter-spacing: 0.5px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* --- Modal / Lightbox Styles --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            gap: 60px;
+            margin: auto; /* Center content */
+        }
+
+        .modal-text-section {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-right: 20px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .modal-description {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 400px;
+            margin-bottom: 16px;
+            white-space: pre-line;
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            font-size: 32px;
+            cursor: pointer;
+            font-weight: 300;
+            line-height: 1;
+            color: var(--text-color);
+            z-index: 1001;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-gallery-section {
+            width: 65%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-media-container {
+            width: 100%;
+            height: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .modal-media-container img, .modal-media-container video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-media-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            min-height: 60vh;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            font-weight: 300;
+            cursor: pointer;
+            padding: 20px;
+            user-select: none;
+            color: var(--text-color);
+            opacity: 0.5;
+            transition: opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .nav-btn:hover { opacity: 1; }
+        .nav-btn.prev { left: 20px; }
+        .nav-btn.next { right: 20px; }
+
+        /* --- Info Modals (About/Contacts/Collaborate) --- */
+        .info-modal-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .info-modal-title {
+            font-family: var(--font-logo);
+            font-size: 48px;
+            margin-bottom: 40px;
+            letter-spacing: 0.05em;
+        }
+
+        .bio-grid, .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .bio-person {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bio-text {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #222;
+        }
+
+        .bio-text strong {
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .bio-headshot {
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            background-color: #f0f0f0;
+            margin-top: 10px;
+        }
+
+        .contact-person {
+            font-size: 14px;
+            line-height: 2;
+        }
+
+        .contact-person strong {
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .contact-person a {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .contact-person a:hover { text-decoration: underline; }
+
+        .collab-text {
+            max-width: 600px;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .collab-email {
+            font-family: var(--font-logo);
+            font-size: 32px;
+            text-decoration: none;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--text-color);
+            padding-bottom: 4px;
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+
+        .collab-email:hover {
+            opacity: 0.5;
+        }
+
+        /* =========================================
+           RESPONSIVENESS FOR TABLET & MOBILE 
+           ========================================= */
+        
+        /* Tablet & Smaller Screens */
+        @media (max-width: 1024px) {
+            #main-website {
+                height: 100vh;
+                overflow-y: auto; /* Allow scrolling if list gets too long */
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                height: auto;
+                padding-top: 20px;
+                padding-bottom: 100px;
+            }
+
+            /* Hide the hover canvas area entirely on mobile */
+            .center-canvas {
+                display: none; 
+            }
+
+            /* Bring the list to the center and make it regular stacked format */
+            .projects-list {
+                position: relative;
+                width: 100%;
+                padding-right: 0;
+                align-items: center;
+                gap: 32px;
+            }
+
+            .project-item {
+                text-align: center;
+            }
+
+            .project-item .title {
+                font-size: 16px;
+            }
+
+            /* Modal adjustments */
+            .modal {
+                padding: 20px;
+                overflow-y: auto;
+            }
+            .modal-content {
+                flex-direction: column;
+                gap: 40px;
+                height: auto;
+                margin-top: 50px;
+                margin-bottom: 50px;
+            }
+            .modal-text-section {
+                width: 100%;
+                padding-right: 0;
+                text-align: center;
+            }
+            .modal-title {
+                font-size: 24px;
+            }
+            .modal-description {
+                margin: 0 auto 16px auto;
+                font-size: 14px;
+            }
+            .modal-gallery-section {
+                width: 100%;
+                min-height: 300px;
+                height: 50vh;
+            }
+            .close-btn {
+                top: 20px;
+                right: 20px;
+                background: #fff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            /* About / Contacts Modals */
+            .info-modal-content {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+            .bio-grid, .contact-grid { 
+                grid-template-columns: 1fr; 
+                gap: 40px; 
+            }
+            .info-modal-title { 
+                font-size: 32px; 
+                margin-bottom: 24px; 
+            }
+            .collab-email { 
+                font-size: 24px; 
+            }
+            .bio-headshot {
+                margin: 10px auto 0 auto;
+            }
+        }
+
+        /* Mobile Phones */
+        @media (max-width: 768px) {
+            .landing-logo { font-size: 60px; }
+            .brand-title { font-size: 24px; letter-spacing: 0.35em; }
+            .plus-icon { font-size: 32px; margin-top: -6px; }
+            
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .modal-gallery-section {
+                min-height: 250px;
+                height: 40vh;
+            }
+
+            .nav-btn {
+                font-size: 30px;
+                padding: 10px;
+                background: rgba(255,255,255,0.7);
+                border-radius: 50%;
+            }
+            .nav-btn.prev { left: 5px; }
+            .nav-btn.next { right: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LANDING PAGE -->
+    <div id="landing-page" onclick="enterSite()">
+        <div class="landing-logo">RaD</div>
+    </div>
+
+    <!-- MAIN WEBSITE -->
+    <div id="main-website">
+        
+        <header>
+            <div class="header-left">
+                <div class="brand-title" onclick="returnToLanding()">RaD</div>
+                
+                <!-- Dropdown Menu Container -->
+                <div class="menu-container">
+                    <div class="plus-icon" onclick="toggleDropdown(event)">+</div>
+                    <div class="dropdown-menu" id="navDropdown">
+                        <a onclick="openInfoModal('aboutModal')">About</a>
+                        <a onclick="openInfoModal('contactsModal')">Contacts</a>
+                        <a onclick="openInfoModal('collaborateModal')">Collaborate</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            
+            <!-- Center Canvas: Description & Hero Image (Desktop Only) -->
+            <div class="center-canvas">
+                <div class="hover-content" id="hoverContent">
+                    <div class="hero-image-container">
+                        <img id="heroImage" src="" alt="Project Hero">
+                    </div>
+                    <div class="hover-description" id="centerDescription"></div>
+                </div>
+            </div>
+
+            <!-- Right Side: Text List -->
+            <div class="projects-list">
+                
+                <div class="project-item" 
+                     data-id="vortex-columns" 
+                     data-desc="Brunnenpassage, Vienna Climate Biennale Vienna 2026. In collaboration with Farila Nashat. The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions."
+                     onclick="openProjectModal('vortex-columns')">
+                    <div class="title">Vortex Columns</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="woven-realities" 
+                     data-desc="Various locations, Vienna, 2024. This exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child."
+                     onclick="openProjectModal('woven-realities')">
+                    <div class="title">Woven Realities</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="si-demain" 
+                     data-desc="Produit dans le cadre de la résidence photographique 'Si Demain Je Pars', animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim. Oran, Algérie. 17 - 25 novembre 2023."
+                     onclick="openProjectModal('si-demain')">
+                    <div class="title">si demain je pars</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="regutting" 
+                     data-desc="A stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine 'whiteness' of the finished stone with the violent disfigurement of the landscape."
+                     onclick="openProjectModal('regutting')">
+                    <div class="title">Regutting</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="another-sea" 
+                     data-desc="TPFF (Toronto Palestine Film Festival). A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall."
+                     onclick="openProjectModal('another-sea')">
+                    <div class="title">another sea behind another wall</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="lifeguard-platform" 
+                     data-desc="Film prop, permanent installation at Dar Jacir-Bethelehem, 2026. Originally built as the central set piece for the film, the tower embodies a physical 'hope inversion.'"
+                     onclick="openProjectModal('lifeguard-platform')">
+                    <div class="title">The Lifeguard Platform</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="wax-home" 
+                     data-desc="The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project."
+                     onclick="openProjectModal('wax-home')">
+                    <div class="title">The Wax Home</div>
+                </div>
+
+                <div class="project-item" 
+                     data-id="pay-cheque" 
+                     data-desc="Graphic on paper. Rania Lardjane. The Khalid Shoman Foundation Summer Academy, 2025. Photo Credits: Unknown."
+                     onclick="openProjectModal('pay-cheque')">
+                    <div class="title">Pay-Cheque</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="copyright">© 2026 RaD</div>
+
+        <!-- Project Modal / Lightbox -->
+        <div class="modal" id="projectModal">
+            <div class="close-btn" onclick="closeModal('projectModal')">×</div>
+            <div class="modal-content">
+                <div class="modal-text-section">
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <p class="modal-description" id="modalDescription"></p>
+                </div>
+                <div class="modal-gallery-section">
+                    <div class="nav-btn prev" onclick="changeMedia(-1)">&lt;</div>
+                    <div class="modal-media-container" id="modalMediaContainer">
+                    </div>
+                    <div class="nav-btn next" onclick="changeMedia(1)">&gt;</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Modal -->
+        <div class="modal" id="aboutModal">
+            <div class="close-btn" onclick="closeModal('aboutModal')">×</div>
+            <div class="info-modal-content">
+                <h2 class="info-modal-title">About</h2>
+                <div class="bio-grid">
+                    
+                    <div class="bio-person">
+                        <div class="bio-text">
+                            <strong>Rania Lardjane</strong>
+                            Rania Lardjane is a visual and textual storyteller. Born to a Palestinian-Arab father and an Algerian-Amazigh mother, she has a lot to tell. She studied Film Production at Dar Al-Kalima University in Bethlehem and completed a BFA in Film Studies at Concordia University in Canada. She moves between Ramallah, Tiohtiá:ke (MTL), and Algiers, and is currently pursuing an MFA in Studio Arts at Concordia University.
+                        </div>
+                        <img src="images/rania_headshot.jpg" alt="Rania Lardjane" class="bio-headshot">
+                    </div>
+
+                    <div class="bio-person">
+                        <div class="bio-text">
+                            <strong>Adham Sinan</strong>
+                            (b. 1995) is an architect, artist, researcher and educator based in Vienna and Palestine. He is also a PhD candidate at the University of Applied Arts Vienna.<br><br>
+                            Sinan has participated in and had his work published in international exhibitions and festivals. Such as the Venice Biennale 2023, the Chicago Biennale 2023 and the Rotterdam Architecture Biennale 2024, amongst others, while highly narrational, His work explores residual matters to craft new spatial and visual possibilities and to redefine redundancy via crafting critical lenses of modernity and what it represents.<br><br>
+                            Trained as an architect, Sinan’s work extends beyond traditional architectural boundaries, engaging with various artistic media and toolsets. He combines his architectural expertise with writing, film, music, and photography, investigating the multifaceted nature of space. His works challenge and expand conventional ideas of possible space through experimentation, shifting perspectives and using defamiliarisation to emphasise spatial identity, interaction, and emotional response.
+                        </div>
+                        <img src="images/adham_headshot.jpg" alt="Adham Sinan" class="bio-headshot">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacts Modal -->
+        <div class="modal" id="contactsModal">
+            <div class="close-btn" onclick="closeModal('contactsModal')">×</div>
+            <div class="info-modal-content">
+                <h2 class="info-modal-title">Contacts</h2>
+                <div class="contact-grid">
+                    <div class="contact-person">
+                        <strong>Rania Lardjane</strong>
+                        <a href="mailto:rania.salawdah@gmail.com">rania.salawdah@gmail.com</a><br>
+                        <a href="https://www.instagram.com/rania.lardjane/" target="_blank">Instagram</a>
+                    </div>
+                    <div class="contact-person">
+                        <strong>Adham Sinan</strong>
+                        <a href="mailto:adam95darwesh@gmail.com">adam95darwesh@gmail.com</a><br>
+                        <a href="https://www.instagram.com/al_adhambinsinan/" target="_blank">Instagram</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collaborate Modal -->
+        <div class="modal" id="collaborateModal">
+            <div class="close-btn" onclick="closeModal('collaborateModal')">×</div>
+            <div class="info-modal-content">
+                <h2 class="info-modal-title">Collaborate with Us</h2>
+                <p class="collab-text">
+                    We are always open to new commissions, creative partnerships,
+                </p>
+                <a href="mailto:a.s.b.a.w.film@gmail.com" class="collab-email">a.s.b.a.w.film@gmail.com</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Project Data Storage ---
+        const projectData = {
+            'vortex-columns': {
+                title: `Vortex Columns– Stable in Disruption`,
+                description: `Brunnenpassage, Vienna Climate Biennale Vienna 2026.
+In collaboration with Farila Nashat
+
+The project addresses the ecological and emotional impacts of geopolitical conflicts, particularly in Afghanistan, the Middle East and other affected regions. Through an open, participatory process, people are invited to carve their personal stories, especially those shaped by war, migration or displacement, into wooden columns. These carvings will form a collective archive, giving physical form to memory, resilience, and transformation. A shared visual and symbols will translate these experiences into a universal narrative. Here, art becomes a tool for remembrance, healing and sustainable social change.`,
+                media: [
+                    'images/vortex_columns_1.jpg', 'images/vortex_columns_2.jpg', 'images/vortex_columns_3.jpg',
+                    'images/vortex_columns_4.jpg', 'images/vortex_columns_5.jpg', 'images/vortex_columns_6.jpg',
+                    'images/vortex_columns_7.jpg', 'images/vortex_columns_8.jpg', 'images/vortex_columns_9.jpg',
+                    'images/vortex_columns_10.jpg', 'images/vortex_columns_11.jpg', 'images/vortex_columns_12.jpg',
+                    'images/vortex_columns_13.mp4', 
+                    'images/vortex_columns_14.jpg', 'images/vortex_columns_15.jpg',
+                    'images/vortex_columns_17.jpg', 'images/vortex_columns_18.jpg', 'images/vortex_columns_19.jpg',
+                    'images/vortex_columns_20.jpg', 'images/vortex_columns_21.jpg', 'images/vortex_columns_22.jpg',
+                    'images/vortex_columns_23.jpg'
+                ]
+            },
+            'woven-realities': {
+                title: `WOVEN REALITIES`,
+                description: `THE MULTILAYEREDNESS OF AFGHAN DWELLINGS AND RITUALS
+Various locations, Vienna, 2024
+
+This exhibition reflects on the abstract process of memory, centring on the perception of living spaces through the eyes of a child. The building is presented as a solid structure, resilient to the demands of time. Personal interactions and objects play a significant role, as they accompany individuals throughout life and shape their inner worlds. This perspective invites a deep appreciation for these items.
+
+Traditional construction methods are employed to create a sustainably usable space that offers visitors a profound understanding of the importance of places of remembrance. The central question explores how materiality, objects, and spaces can contribute to renewing existence and resisting the forces of forgetting.`,
+                media: [
+                    'images/woven_realities_1.jpg', 'images/woven_realities_2.jpg', 'images/woven_realities_3.jpg', 
+                    'images/woven_realities_4.jpg', 'images/woven_realities_5.jpg', 'images/woven_realities_6.jpg',
+                    'images/woven_realities_8.jpg', 'images/woven_realities_9.jpg', 'images/woven_realities_10.jpg',
+                    'images/woven_realities_11.jpg', 'images/woven_realities_12.jpg', 'images/woven_realities_13.jpg',
+                    'images/woven_realities_14.jpg', 'images/woven_realities_15.jpg', 'images/woven_realities_16.jpg',
+                    'images/woven_realities_17.jpg', 'images/woven_realities_18.jpg'
+                ]
+            },
+            'si-demain': {
+                title: `si demain je pars`,
+                description: `Produit dans le cadre de la résidence photographique "Si Demain Je Pars", animée par Michaël Duperrin, Nora Zaïr et Sadek Rahim.
+
+Soutenu par l'Institut Français D'Algérie.
+
+Oran, Algérie.
+
+17 - 25 novembre 2023.`,
+                // Video is first so it opens directly to video, image second for the hover effect
+                media: [
+                    'images/si_demain_01.mp4',
+                    'images/si_demain_1.jpg'
+                ]
+            },
+            'regutting': {
+                title: `Regutting`,
+                description: `This work presents a stark, visceral journey into the extractive process at the Bani Na'im quarries. It contrasts the pristine "whiteness" of the finished stone, which is used as a mere decorative veneer, with the violent disfigurement of the landscape, where mountains are carved into misshapen voids. The piece explores how the scarred terrain—the deep pits of waste and awe-inspiring lacerations—embodies greed and land murder inscribed onto the earth by the indigenous population. Crucially, the journey traces the return of the remains: the massive amounts of fine rock powder, toxic slurry, and the residual imperfect that are often thrown into unauthorised landfills in Area C, adjacent to Palestinian localities.`,
+                media: [
+                    'images/regutting_1.jpg', 
+                    { type: 'youtube', id: 'FYU6YqHDCbM' }, // Added YouTube Video
+                    'images/regutting_2.jpg', 'images/regutting_3.jpg',
+                    'images/regutting_4.jpg', 'images/regutting_5.jpg', 'images/regutting_6.jpg',
+                    'images/regutting_7.jpg', 'images/regutting_8.jpg', 'images/regutting_9.jpg',
+                    'images/regutting_10.jpg', 'images/regutting_11.jpg', 'images/regutting_12.jpg',
+                    'images/regutting_13.jpg', 'images/regutting_14.jpg', 'images/regutting_15.jpg',
+                    'images/regutting_16.jpg', 'images/regutting_17.jpg', 'images/regutting_18.jpg',
+                    'images/regutting_19.jpg', 'images/regutting_20.jpg', 'images/regutting_21.jpg',
+                    'images/regutting_22.jpg', 'images/regutting_23.jpg', 'images/regutting_24.jpg',
+                    'images/regutting_25.jpg', 'images/regutting_26.jpg', 'images/regutting_27.jpg',
+                    'images/regutting_28.jpg', 'images/regutting_29.jpg'
+                ]
+            },
+            'another-sea': {
+                title: `another sea behind another wall`,
+                description: `TPFF (Toronto Palestine Film Festival)
+Local Pals Residency Logline:
+
+A lifeguard in his late 60s, from the Palestinian National Rescue Team-North District, who seems to be highly dedicated to his job. Until we realise he is simply sitting on a rooftop overlooking the apartheid wall.`,
+                media: [
+                    'images/another_sea_1.jpg', 'images/another_sea_2.jpg', 'images/another_sea_3.jpg',
+                    'images/another_sea_5.jpg', 'images/another_sea_6.jpg', 'images/another_sea_7.jpg',
+                    'images/another_sea_9.jpg', 'images/another_sea_10.jpg'
+                ]
+            },
+            'lifeguard-platform': {
+                title: `The Lifeguard Platform`,
+                description: `Film prop, permanent installation at Dar Jacir-Bethelehem, 2026.
+
+Originally built as the central set piece for the film, the tower embodies a physical "hope inversion." Severed from the coast and constructed from raw metal tubing, the structure confronts the scale of the separation wall by forcing a radical vertical ascent, just to clear the colonial clutter and claim a sightline to a stolen horizon.
+
+Rather than guarding water, the platform becomes an elevated post to watch over a phantom sea, transforming inherited past into an active vigil, and a concrete manifestation of the clutching to hope-as a valid job in its own right-punctuated by a single red lifebuoy acting as a visual lifeline.
+
+Transitioning from a cinematic prop into a permanent installation at Dar Jacir, the tower stands as a physical monument to the "taboo of hope," marking the heights required to preserve a vanishing landscape.`,
+                media: [
+                    'images/lifeguard_platform_1.jpg', 'images/lifeguard_platform_2.jpg', 'images/lifeguard_platform_3.jpg',
+                    'images/lifeguard_platform_4.jpg', 'images/lifeguard_platform_5.jpg', 'images/lifeguard_platform_6.jpg'
+                ]
+            },
+            'wax-home': {
+                title: `The Wax Home`,
+                description: `The Wax Home: Material experimentation with paraffin wax - part of the Liberation Front project.`,
+                media: [
+                    'images/wax_home_1.jpg', 
+                    { type: 'youtube', id: '_XTuUoAtsQ4' }, // Added YouTube Video
+                    'images/wax_home_2.jpg',
+                    'images/wax_home_3.jpg',
+                    'images/wax_home_4.jpg' 
+                ]
+            },
+            'pay-cheque': {
+                title: `Pay-Cheque`,
+                description: `Graphic on paper
+Rania Lardjane
+The Khalid Shoman Foundation Summer Academy, 2025
+Photo Credits: Unknown`,
+                media: [
+                    'images/pay_cheque_1.jpg', 
+                    'images/pay_cheque_2.jpg'
+                ]
+            }
+        };
+
+        // --- Dropdown Menu Logic ---
+        function toggleDropdown(event) {
+            event.stopPropagation(); 
+            const dropdown = document.getElementById('navDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('navDropdown');
+            const plusIcon = document.querySelector('.plus-icon');
+            
+            if (dropdown.classList.contains('active')) {
+                if (!dropdown.contains(event.target) && event.target !== plusIcon) {
+                    dropdown.classList.remove('active');
+                }
+            }
+        });
+
+        // --- Landing Page Logic ---
+        function enterSite() {
+            document.getElementById('landing-page').classList.add('hidden');
+            
+            const mainSite = document.getElementById('main-website');
+            mainSite.classList.add('loaded');
+            
+            initHoverLogic();
+        }
+
+        function returnToLanding() {
+            document.getElementById('main-website').classList.remove('loaded');
+            document.getElementById('landing-page').classList.remove('hidden');
+            hideHover();
+        }
+
+        // --- Hover Logic for Text List & Center Canvas ---
+        const projectItems = document.querySelectorAll('.project-item');
+        const hoverContent = document.getElementById('hoverContent');
+        const centerDescription = document.getElementById('centerDescription');
+        const heroImage = document.getElementById('heroImage');
+
+        function initHoverLogic() {
+            // Hover effects only apply to screens wider than 1024px
+            if (window.innerWidth > 1024) {
+                projectItems.forEach(item => {
+                    item.addEventListener('mouseenter', () => {
+                        const descText = item.getAttribute('data-desc');
+                        const projectId = item.getAttribute('data-id');
+                        
+                        centerDescription.textContent = descText;
+                        
+                        // Find the first string (image) in the media array to use as the hero
+                        const projectMedia = projectData[projectId].media;
+                        let heroMedia = null;
+                        
+                        for (let i = 0; i < projectMedia.length; i++) {
+                            if (typeof projectMedia[i] === 'string' && projectMedia[i].toLowerCase().match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                                heroMedia = projectMedia[i];
+                                break; // Stop at the first image found
+                            }
+                        }
+                        
+                        heroImage.src = ''; 
+
+                        // If the image fails to load (e.g. file missing), just hide the image container, 
+                        // NO STOCK FALLBACKS as requested.
+                        heroImage.onerror = function() {
+                            this.style.display = 'none';
+                        };
+                        heroImage.onload = function() {
+                            this.style.display = 'block';
+                        }
+                        
+                        if (heroMedia) {
+                            heroImage.src = heroMedia;
+                        }
+
+                        hoverContent.classList.add('active');
+                    });
+
+                    item.addEventListener('mouseleave', () => {
+                        hideHover();
+                    });
+                });
+            }
+        }
+
+        function hideHover() {
+            hoverContent.classList.remove('active');
+        }
+
+        // --- Project Modal Logic ---
+        let currentProjectMedia = [];
+        let currentMediaIndex = 0;
+        let preloadedMedia = {}; 
+        const projectModal = document.getElementById('projectModal');
+        const mediaContainer = document.getElementById('modalMediaContainer');
+
+        function openProjectModal(projectId) {
+            document.getElementById('navDropdown').classList.remove('active');
+
+            const data = projectData[projectId];
+            if (!data) return;
+
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDescription').textContent = data.description;
+            
+            // Set media array for the modal.
+            if (projectId === 'si-demain') {
+                // For si-demain, we ONLY want the video in the modal
+                currentProjectMedia = data.media.filter(item => typeof item === 'string' && item.endsWith('.mp4'));
+            } else {
+                currentProjectMedia = data.media;
+            }
+            
+            currentMediaIndex = 0;
+            
+            preloadMedia(data.media);
+            findAndLoadNextMedia(0); // Use robust loader
+            
+            projectModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function preloadMedia(mediaArray) {
+            mediaArray.forEach((item, index) => {
+                if (typeof item === 'string') {
+                    const isVideo = item.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+                    if (!isVideo) {
+                        const img = new Image();
+                        img.src = item;
+                        preloadedMedia[index] = img;
+                    }
+                }
+            });
+        }
+
+        // Smart Loader: Skips missing files seamlessly
+        function findAndLoadNextMedia(startIndex) {
+            if (currentProjectMedia.length === 0) return;
+            
+            currentMediaIndex = startIndex;
+            let attempts = 0;
+            
+            function tryLoad() {
+                if (attempts >= currentProjectMedia.length) {
+                    mediaContainer.innerHTML = '<p style="color:#999; font-family:var(--font-main);">No media found in folder.</p>';
+                    return;
+                }
+
+                const currentItem = currentProjectMedia[currentMediaIndex];
+                mediaContainer.style.opacity = '0';
+
+                setTimeout(() => {
+                    mediaContainer.innerHTML = '';
+                    
+                    if (typeof currentItem === 'object' && currentItem !== null) {
+                        if (currentItem.type === 'vimeo') {
+                            const iframe = document.createElement('iframe');
+                            iframe.src = `https://player.vimeo.com/video/${currentItem.id}?autoplay=1`;
+                            iframe.allow = "autoplay; fullscreen; picture-in-picture";
+                            iframe.allowFullscreen = true;
+                            mediaContainer.appendChild(iframe);
+                        } else if (currentItem.type === 'youtube') {
+                            const iframe = document.createElement('iframe');
+                            iframe.src = `https://www.youtube.com/embed/${currentItem.id}?autoplay=1&rel=0`;
+                            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                            iframe.allowFullscreen = true;
+                            mediaContainer.appendChild(iframe);
+                        }
+                        mediaContainer.style.opacity = '1';
+                        return;
+                    }
+
+                    const currentFile = currentItem;
+                    const isVideo = currentFile.toLowerCase().match(/\.(mp4|webm|ogg)$/i);
+
+                    if (isVideo) {
+                        const video = document.createElement('video');
+                        video.src = currentFile;
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.playsInline = true;
+                        video.controls = true;
+                        
+                        // If video fails, skip to next
+                        video.onerror = () => {
+                            currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                            attempts++;
+                            tryLoad();
+                        };
+                        
+                        mediaContainer.appendChild(video);
+                    } else {
+                        // If preloaded, use cached version, otherwise create new
+                        if (preloadedMedia[currentMediaIndex]) {
+                            const clone = preloadedMedia[currentMediaIndex].cloneNode();
+                            clone.onerror = () => {
+                                currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                                attempts++;
+                                tryLoad();
+                            };
+                            mediaContainer.appendChild(clone);
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = currentFile;
+                            img.alt = "Project Media";
+                            // If image fails, skip to next
+                            img.onerror = () => {
+                                currentMediaIndex = (currentMediaIndex + 1) % currentProjectMedia.length;
+                                attempts++;
+                                tryLoad();
+                            };
+                            mediaContainer.appendChild(img);
+                        }
+                    }
+                    
+                    mediaContainer.style.opacity = '1';
+                }, 150);
+            }
+            
+            tryLoad();
+        }
+
+        function changeMedia(direction) {
+            if (currentProjectMedia.length === 0) return;
+            
+            currentMediaIndex += direction;
+            
+            if (currentMediaIndex >= currentProjectMedia.length) {
+                currentMediaIndex = 0;
+            } else if (currentMediaIndex < 0) {
+                currentMediaIndex = currentProjectMedia.length - 1;
+            }
+            
+            findAndLoadNextMedia(currentMediaIndex);
+        }
+
+        // --- Generic Modal Logic (About/Contacts/Collaborate) ---
+        function openInfoModal(modalId) {
+            document.getElementById('navDropdown').classList.remove('active');
+            hideHover();
+            
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+            
+            if (modalId === 'projectModal') {
+                mediaContainer.innerHTML = '';
+            }
+        }
+
+        // Keyboard navigation for Project Modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    closeModal(modal.id);
+                });
+                document.getElementById('navDropdown').classList.remove('active');
+            }
+            if (projectModal.classList.contains('active')) {
+                if (e.key === 'ArrowLeft') changeMedia(-1);
+                if (e.key === 'ArrowRight') changeMedia(1);
+            }
+        });
+
+        // Click outside to close all modals
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
